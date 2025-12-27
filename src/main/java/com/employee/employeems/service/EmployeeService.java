@@ -38,7 +38,7 @@ public class EmployeeService {
 
 }
     public String updateEmployee(EmployeeDTO employeeDTO){
-        if (employeeRepo.existsById(employeeDTO.getEmpId())){
+        if (employeeDTO.getEmpId() != null && employeeRepo.existsById(employeeDTO.getEmpId())){
             employeeRepo.save(modelMapper.map(employeeDTO,Employee.class));
             return VarList.SUCCESS;
 
