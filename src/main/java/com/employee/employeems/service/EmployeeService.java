@@ -1,4 +1,37 @@
 package com.employee.employeems.service;
 
+import com.employee.employeems.dto.EmployeeDTO;
+import com.employee.employeems.entity.Employee;
+import com.employee.employeems.repo.EmployeeRepo;
+import com.employee.employeems.util.VarList;
+import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+
 public class EmployeeService {
+
+    @Autowired
+    private EmployeeRepo employeeRepo;
+    @Autowired
+    private ModelMapper modelMapper;
+
+//DTOs are used in the service layer to transfer data
+// safely between layers without exposing the database entity.
+    //EmployeeDTO is the data type (class),
+// and employeeDTO is the variable that holds the object passed to the method.
+    public String saveEmployee(EmployeeDTO employeeDTO){
+        if(employeeRepo.existsById(employeeDTO.getEmpId())){
+            return VarList.DUPLICATE;
+        }
+
+    else {
+        employeeRepo.save(modelMapper.map(employeeDTO, Employee.class));
+        return VarList.SUCCESS;
+        }
+
+}
 }
