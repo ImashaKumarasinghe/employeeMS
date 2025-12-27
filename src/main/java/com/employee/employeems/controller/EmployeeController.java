@@ -9,62 +9,60 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/employee")
-
-
 public class EmployeeController {
+
     @Autowired
     public EmployeeService employeeService;
+
     @Autowired
     public ResponseDTO responseDTO;
 
     @PostMapping(value = "/saveemployee")
     //ResponseEntity is used to return the HTTP response with full control over the
     // response body, status code, and headers.
+    public ResponseEntity saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
 
+        try {
+            String res = employeeService.saveEmployee(employeeDTO);
+            if (res.equals("00")) {
+                responseDTO.setCode(VarList.SUCCESS);
+                responseDTO.setMessage("success");
+                responseDTO.setContent(employeeDTO);
+                return new ResponseEntity(responseDTO, HttpStatus.ACCEPTED);
 
-public ResponseEntity saveEmployee(@RequestBody EmployeeDTO employeeDTO){
+            } else if (res.equals("03")) {
+                responseDTO.setCode(VarList.DUPLICATE);
+                responseDTO.setMessage("Employee Already Registered");
+                responseDTO.setContent(employeeDTO);
+                return new ResponseEntity(responseDTO, HttpStatus.BAD_REQUEST);
 
-    try {
-        String res=employeeService.saveEmployee(employeeDTO);
-        if(res.equals("00")){
-            responseDTO.setCode(VarList.SUCCESS);
-            responseDTO.setMessage("success");
-            responseDTO.setContent(employeeDTO);
-            return new ResponseEntity(responseDTO, HttpStatus.ACCEPTED);
+            } else {
+                responseDTO.setCode(VarList.ERROR);
+                responseDTO.setMessage("Fail");
+                responseDTO.setContent(null);
+                return new ResponseEntity(responseDTO, HttpStatus.BAD_REQUEST);
+            }
 
-        } else if (res.equals("03")) {
-            responseDTO.setCode(VarList.DUPLICATE);
-            responseDTO.setMessage("Employee Already Registered");
-            responseDTO.setContent(employeeDTO);
-            return new ResponseEntity(responseDTO, HttpStatus.BAD_REQUEST);
-
-        }else{
+        } catch (Exception ex) {
             responseDTO.setCode(VarList.ERROR);
-            responseDTO.setMessage("Fail");
+            responseDTO.setMessage(ex.getMessage());
             responseDTO.setContent(null);
-            return new ResponseEntity(responseDTO, HttpStatus.BAD_REQUEST);
-
+            return new ResponseEntity(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-    } catch (Exception ex) {
-        responseDTO.setCode(VarList.ERROR);
-        responseDTO.setMessage(ex.getMessage());
-        responseDTO.setContent(null);
-        return new ResponseEntity(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-}
+
     @PutMapping(value = "/updateemployee")
     //ResponseEntity is used to return the HTTP response with full control over the
     // response body, status code, and headers.
-
-
-    public ResponseEntity updateEmployee(@RequestBody EmployeeDTO employeeDTO){
+    public ResponseEntity updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
 
         try {
-            String res=employeeService.updateEmployee(employeeDTO);
-            if(res.equals("00")){
+            String res = employeeService.updateEmployee(employeeDTO);
+            if (res.equals("00")) {
                 responseDTO.setCode(VarList.SUCCESS);
                 responseDTO.setMessage("success");
                 responseDTO.setContent(employeeDTO);
@@ -76,12 +74,11 @@ public ResponseEntity saveEmployee(@RequestBody EmployeeDTO employeeDTO){
                 responseDTO.setContent(employeeDTO);
                 return new ResponseEntity(responseDTO, HttpStatus.BAD_REQUEST);
 
-            }else{
+            } else {
                 responseDTO.setCode(VarList.ERROR);
                 responseDTO.setMessage("Fail");
                 responseDTO.setContent(null);
                 return new ResponseEntity(responseDTO, HttpStatus.BAD_REQUEST);
-
             }
 
         } catch (Exception ex) {
@@ -92,5 +89,24 @@ public ResponseEntity saveEmployee(@RequestBody EmployeeDTO employeeDTO){
         }
     }
 
+    @GetMapping(value = "/getAllEmployees")
+    public ResponseEntity<ResponseDTO> getAllEmployees() {
+        try {
+            List<EmployeeDTO> employeeDTOList = employeeService.getAllEmployees();
+
+            responseDTO.setCode(VarList.SUCCESS);
+            responseDTO.setMessage("success");
+            responseDTO.setContent(employeeDTOList);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            responseDTO.setCode(VarList.ERROR);
+            responseDTO.setMessage(ex.getMessage());
+            responseDTO.setContent(null);
+
+            return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
