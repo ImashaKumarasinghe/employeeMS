@@ -60,5 +60,13 @@ public class EmployeeService {
             return null;
         }
     }
+    public String deleteEmployee(Integer empId){
+        if (employeeRepo.existsById(empId)){
+            employeeRepo.deleteById(empId);
+            return VarList.SUCCESS;
+
+        }else {}
+        return VarList.NOT_FOUND;
+    }
 
 }
