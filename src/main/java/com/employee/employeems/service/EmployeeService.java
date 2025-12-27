@@ -24,7 +24,7 @@ public class EmployeeService {
     //EmployeeDTO is the data type (class),
 // and employeeDTO is the variable that holds the object passed to the method.
     public String saveEmployee(EmployeeDTO employeeDTO){
-        if(employeeRepo.existsById(employeeDTO.getEmpId())){
+        if(employeeDTO.getEmpId() != null && employeeRepo.existsById(employeeDTO.getEmpId())){
             return VarList.DUPLICATE;
         }
 
