@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1/employee")
 public class EmployeeController {
@@ -134,7 +135,7 @@ public class EmployeeController {
 
     }
 
-    @DeleteMapping("/deleteEmployee")
+    @DeleteMapping("/deleteEmployee/{empId}")
     public ResponseEntity deleteEmployee(@PathVariable Integer empId){
         try {
             String res=employeeService.deleteEmployee(empId);
@@ -159,4 +160,4 @@ public class EmployeeController {
         }
 
 
-    }
+    }}
